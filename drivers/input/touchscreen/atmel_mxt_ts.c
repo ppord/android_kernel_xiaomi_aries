@@ -28,6 +28,15 @@
 #include <linux/string.h>
 #include <linux/workqueue.h>
 
+#ifdef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
+#ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE
+#include <linux/input/sweep2wake.h>
+#endif
+#ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
+#include <linux/input/doubletap2wake.h>
+#endif
+#endif
+
 #if defined(CONFIG_HAS_EARLYSUSPEND)
 #include <linux/earlysuspend.h>
 /* Early-suspend level */
@@ -2433,6 +2442,7 @@ static int mxt_start(struct mxt_data *data)
 
 static int mxt_stop(struct mxt_data *data)
 {
+#ifndef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
 	int error;
 	u8 t7_data[T7_DATA_SIZE] = {0};
 
@@ -2443,7 +2453,7 @@ static int mxt_stop(struct mxt_data *data)
 			"failed to configure deep sleep mode\n");
 		return error;
 	}
-
+#endif
 	return 0;
 }
 
